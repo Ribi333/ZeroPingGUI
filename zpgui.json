@@ -1,0 +1,8 @@
+{
+    "enabled": false,
+    "debugMode": false,
+    "highPingMode": true,
+    "clickDelay": 300,
+    "timeout": 100,
+    "renderPredictions": true
+}

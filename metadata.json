@@ -1,0 +1,11 @@
+{
+    "name": "ZeroPingGUI",
+    "creator": "Ribi333",
+    "version": "1.0.0",
+    "description": "nuke france",
+    "entry": "index.js",
+    "requires": [
+        "BloomCore",
+        "PogData"
+    ]
+}

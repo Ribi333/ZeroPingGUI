@@ -4,7 +4,6 @@ const C0EPacketClickWindow = Java.type("net.minecraft.network.play.client.C0EPac
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow");
 const S2FPacketSetSlot = Java.type("net.minecraft.network.play.server.S2FPacketSetSlot");
 
-// Initialize data storage
 const dataObject = new PogObject("ZeroPingGUI", {
     enabled: false,
     debugMode: false,
@@ -33,6 +32,7 @@ register("command", (arg1, arg2) => {
         ChatLib.chat("&b/zpgui delay <ms> - &3Set first click delay");
         ChatLib.chat("&b/zpgui timeout <ms> - &3Set click timeout");
         ChatLib.chat("&b/zpgui status - &3Show current settings");
+        ChatLib.chat("&b/zpgui recommend - &3Set recommended settings");
         return;
     }
 
@@ -79,6 +79,18 @@ register("command", (arg1, arg2) => {
             dataObject.timeout = timeout;
             ChatLib.chat(`&b[&3ZPGUI&b] Click timeout set to &e${timeout}ms`);
             break;
+        case "recommend":
+            dataObject.timeout = 100;
+            dataObject.clickDelay = 300;
+            dataObject.highPingMode = true;
+            dataObject.renderPredictions = true;
+            dataObject.debugMode = false;
+            ChatLib.chat("&b[&3ZPPVP&b] Applied recommended settings:");
+            ChatLib.chat("&b  • Click Timeout: &e100ms");
+            ChatLib.chat("&b  • First Click Delay: &e300ms");
+            ChatLib.chat("&b  • High-ping Mode: &aEnabled");
+            ChatLib.chat("&b  • Render Predictions: &aEnabled");
+            break;    
         case "status":
             ChatLib.chat("&b[&3ZPGUI&b] Status:");
             ChatLib.chat(`&b Module: ${dataObject.enabled ? "&aEnabled" : "&cDisabled"}`);
@@ -145,7 +157,6 @@ register("packetReceived", (packet, event) => {
     if (!dataObject.enabled) return;
     
     if (packet instanceof S2DPacketOpenWindow) {
-
         currentWindowId = packet.func_148901_c();
         windowTitle = packet.func_148902_e();
         windowSize = packet.func_148898_f();
@@ -167,6 +178,7 @@ register("packetReceived", (packet, event) => {
     }
 });
 
+register("guiClosed", (gui) => {
     if (!isInGUI) return;
     
     isInGUI = false;
@@ -213,8 +225,7 @@ function updateSlot(slotId, item) {
 }
 
 function predictSlotChange(slotId, button) {
-    // For now, we just mark that we've clicked
-    // In a more advanced implementation, we could predict inventory changes
+    // for now, we just mark that we've clicked
 }
 
 function sendClick(slotId, button, item) {
@@ -256,4 +267,5 @@ register("worldLoad", () => {
     dataObject.save();
 });
 
-ChatLib.chat("&b[&3ZPGUI&b] Module loaded! Use &b/zpgui toggle&3 to enable.");
+ChatLib.chat("&b[&3ZPGUI&b] Module loaded! Use &b/zpgui toggle &3to enable.");
+ChatLib.chat("&b[&3ZPGUI&b] &bUse /zpgui recommend &3for optimal settings.");
